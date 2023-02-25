@@ -3,10 +3,12 @@ import "./App.css";
 import InputField from "./components/InputField";
 import TodoList from "./components/TodoList";
 import { Todo } from "./model";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 
 const App: React.FC = () => {
   const [todo, setTodo] = useState<string>(""); //this is how we define the type
   const [todos, setTodos] = useState<Todo[]>([]); //Todo[] is from the model.ts 在array 裡面3個property的object
+  const [completedTodos, setCompletedTodos] = useState<Todo[]>([]);
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,15 +18,23 @@ const App: React.FC = () => {
       setTodo(""); //it's just empty the input after add
     }
   };
-
-  console.log(todo);
+  const onDragEnd = (result: DropResult) => {
+    console.log(result);
+  };
   return (
     <>
-      <div className="App">
-        <span className="heading">Taskify</span>
-        <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
-        <TodoList todos={todos} setTodos={setTodos} />
-      </div>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="App">
+          <span className="heading">Taskify</span>
+          <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
+          <TodoList
+            todos={todos}
+            setTodos={setTodos}
+            completedTodos={completedTodos}
+            setCompletedTodos={setCompletedTodos}
+          />
+        </div>
+      </DragDropContext>
     </>
   );
 };
